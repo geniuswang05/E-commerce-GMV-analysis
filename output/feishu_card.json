@@ -1,0 +1,108 @@
+{
+  "schema": "2.0",
+  "config": {
+    "wide_screen_mode": true,
+    "enable_forward": true
+  },
+  "header": {
+    "title": {
+      "tag": "plain_text",
+      "content": "📊 E-commerce GMV Growth Attribution Report"
+    },
+    "subtitle": {
+      "tag": "plain_text",
+      "content": "Period: Recent | Generated: 2026-05-02 11:19"
+    },
+    "template": "blue"
+  },
+  "body": {
+    "elements": [
+      {
+        "tag": "column_set",
+        "flex_mode": "none",
+        "background_style": "grey",
+        "columns": [
+          {
+            "tag": "column",
+            "width": "weighted",
+            "weight": 1,
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                  "tag": "lark_md",
+                  "content": "**Total GMV**\n💰 ¥11,188,939"
+                }
+              }
+            ]
+          },
+          {
+            "tag": "column",
+            "width": "weighted",
+            "weight": 1,
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                  "tag": "lark_md",
+                  "content": "**Avg CTR**\n🖱️ 74.59%"
+                }
+              }
+            ]
+          },
+          {
+            "tag": "column",
+            "width": "weighted",
+            "weight": 1,
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                  "tag": "lark_md",
+                  "content": "**Avg CVR**\n🛒 70.16%"
+                }
+              }
+            ]
+          },
+          {
+            "tag": "column",
+            "width": "weighted",
+            "weight": 1,
+            "elements": [
+              {
+                "tag": "div",
+                "text": {
+                  "tag": "lark_md",
+                  "content": "**Top Platform**\n🏆 taobao"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "tag": "hr"
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**🔍 GMV Multiplicative Decomposition Model**\nGMV = Impression × CTR (Add-to-Cart Rate) × CVR (Conversion Rate) × ARPU (Avg Order Value)\n\n**Attribution Method:** Log-difference decomposition + Shapley Value fair allocation"
+        }
+      },
+      {
+        "tag": "hr"
+      },
+      {
+        "tag": "div",
+        "text": {
+          "tag": "lark_md",
+          "content": "**📦 Multi-Dimensional Analysis Results**\n- **Highest GMVCategory：** 食品饮料\n- **Highest GMVPlatform：** taobao\n- **Dimensions:** Platform / Category / City"
+        }
+      },
+      {
+        "tag": "hr"
+      }
+    ]
+  }
+}

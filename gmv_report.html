@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>E-commerce GMV Attribution Analysis Report</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;600;700&display=swap');
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:'Noto Sans SC',sans-serif;background:#f0f4f8;color:#1e293b;padding:28px;line-height:1.6}
+    .header{background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 60%,#1d4ed8 100%);color:#fff;padding:40px 36px;border-radius:20px;margin-bottom:24px;box-shadow:0 12px 40px rgba(29,78,216,.35)}
+    .header h1{font-size:26px;font-weight:700;letter-spacing:.5px}
+    .header .sub{opacity:.75;margin-top:6px;font-size:13px}
+    .formula-box{background:#fff;border-radius:14px;padding:22px 28px;margin-bottom:24px;text-align:center;border:2px solid #dbeafe;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .formula{font-size:18px;color:#1e40af;font-weight:700;letter-spacing:.5px}
+    .formula span{color:#64748b;font-size:13px;font-weight:400}
+    .formula-sub{margin-top:8px;font-size:12px;color:#94a3b8}
+    .kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px}
+    .kpi{background:#fff;border-radius:14px;padding:22px 20px;box-shadow:0 2px 10px rgba(0,0,0,.05);border-top:4px solid}
+    .kpi.gmv{border-color:#1d4ed8}.kpi.ctr{border-color:#059669}.kpi.cvr{border-color:#d97706}.kpi.plat{border-color:#7c3aed}
+    .kpi-label{font-size:11px;color:#94a3b8;text-transform:uppercase;letter-spacing:1px;font-weight:600}
+    .kpi-value{font-size:30px;font-weight:700;margin-top:6px;color:#0f172a}
+    .kpi-sub{font-size:12px;color:#94a3b8;margin-top:2px}
+    .section{background:#fff;border-radius:14px;padding:26px;margin-bottom:24px;box-shadow:0 2px 10px rgba(0,0,0,.05)}
+    .section h2{font-size:17px;font-weight:700;color:#1e293b;margin-bottom:18px;display:flex;align-items:center;gap:8px}
+    table{width:100%;border-collapse:collapse;font-size:13.5px}
+    th{background:#f1f5f9;color:#475569;padding:10px 14px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+    td{padding:11px 14px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:#f8fafc}
+    tr.highlight-top td{background:#fef3c7;font-weight:700}
+    .bar-container{background:#e2e8f0;border-radius:6px;height:8px;width:160px}
+    .bar{background:linear-gradient(90deg,#1d4ed8,#60a5fa);height:100%;border-radius:6px}
+    .tag{display:inline-block;background:#eff6ff;color:#1d4ed8;border-radius:6px;padding:3px 10px;font-size:12px;margin:3px;font-weight:600;border:1px solid #bfdbfe}
+    .funnel-row{display:flex;align-items:center;gap:0;margin:16px 0}
+    .funnel-step{flex:1;text-align:center;padding:16px 8px;position:relative}
+    .funnel-step:not(:last-child)::after{content:'→';position:absolute;right:-10px;top:50%;transform:translateY(-50%);font-size:20px;color:#94a3b8}
+    .funnel-num{font-size:22px;font-weight:700;color:#1d4ed8}
+    .funnel-label{font-size:11px;color:#64748b;margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+    .funnel-rate{font-size:12px;color:#059669;font-weight:600;margin-top:2px}
+    .shapley-pos{color:#059669;font-weight:700}
+    .shapley-neg{color:#dc2626;font-weight:700}
+    .footer{text-align:center;color:#94a3b8;font-size:12px;margin-top:16px}
+  </style>
+</head>
+<body>
+
+<div class="header">
+  <h1>E-commerce GMV Growth Attribution Report</h1>
+  <p class="sub">Data: Multi-platform e-commerce dataset | Generated: 2026-05-02 11:19 | Framework: Multiplicative Decomposition + Shapley Attribution</p>
+</div>
+
+<div class="formula-box">
+  <div class="formula">GMV &nbsp;=&nbsp; Impression &nbsp;×&nbsp; CTR <span>(Add-to-Cart Rate)</span> &nbsp;×&nbsp; CVR <span>(Conversion Rate)</span> &nbsp;×&nbsp; ARPU <span>(Avg Order Value)</span></div>
+  <div class="formula-sub">Method: Log-difference decomposition → MoM factor contribution | Shapley Value → fair multi-factor attribution</div>
+</div>
+
+<div class="kpi-grid">
+  <div class="kpi gmv"><div class="kpi-label">Total GMV</div><div class="kpi-value">¥11,188,939</div><div class="kpi-sub">Valid orders total</div></div>
+  <div class="kpi ctr"><div class="kpi-label">Avg CTR</div><div class="kpi-value">74.6%</div><div class="kpi-sub">Add-to-cart rate avg</div></div>
+  <div class="kpi cvr"><div class="kpi-label">Avg CVR</div><div class="kpi-value">70.2%</div><div class="kpi-sub">Conversion rate avg</div></div>
+  <div class="kpi plat"><div class="kpi-label">Top Platform</div><div class="kpi-value" style="font-size:18px">taobao</div><div class="kpi-sub">Highest GMV</div></div>
+</div>
+
+<div class="section">
+  <h2>Conversion Funnel Overview</h2>
+  <div class="funnel-row">
+    <div class="funnel-step" style="background:#eff6ff;border-radius:10px">
+      <div class="funnel-num">5,458</div>
+      <div class="funnel-label">Impression</div>
+    </div>
+    <div class="funnel-step" style="background:#f0fdf4;border-radius:10px">
+      <div class="funnel-num">4,034</div>
+      <div class="funnel-label">Add-to-Cart</div>
+      <div class="funnel-rate">Add-to-Cart Rate (CTR) 74.6%</div>
+    </div>
+    <div class="funnel-step" style="background:#fffbeb;border-radius:10px">
+      <div class="funnel-num">2,810</div>
+      <div class="funnel-label">Orders</div>
+      <div class="funnel-rate">CVR 70.2%</div>
+    </div>
+    <div class="funnel-step" style="background:#fdf4ff;border-radius:10px">
+      <div class="funnel-num">2,428</div>
+      <div class="funnel-label">Payments</div>
+      <div class="funnel-rate">Payment Rate 87.6%</div>
+    </div>
+    <div class="funnel-step" style="background:#f0fdf4;border-radius:10px">
+      <div class="funnel-num">¥11,188,939</div>
+      <div class="funnel-label">GMV</div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <h2>GMV Ranking by Platform</h2>
+  <table>
+    <thead><tr><th>Platform</th><th>GMV (CNY)</th><th>Share</th></tr></thead>
+    <tbody>
+        <tr class="highlight-top">
+            <td>🥇 taobao</td>
+            <td>¥4,619,413</td>
+            <td><div class="bar-container"><div class="bar" style="width:100.0%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>🥈 douyin</td>
+            <td>¥3,330,345</td>
+            <td><div class="bar-container"><div class="bar" style="width:72.1%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>🥉 jd</td>
+            <td>¥3,239,182</td>
+            <td><div class="bar-container"><div class="bar" style="width:70.1%"></div></div></td>
+        </tr></tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Category GMV Top 10</h2>
+  <table>
+    <thead><tr><th>Category</th><th>GMV (CNY)</th><th>CTR</th><th>CVR</th><th>Share</th></tr></thead>
+    <tbody>
+        <tr class="highlight-top">
+            <td>1. 食品饮料</td>
+            <td>¥1,553,530</td>
+            <td>79.41%</td>
+            <td>70.12%</td>
+            <td><div class="bar-container"><div class="bar" style="width:100.0%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>2. 母婴用品</td>
+            <td>¥1,447,365</td>
+            <td>74.05%</td>
+            <td>67.62%</td>
+            <td><div class="bar-container"><div class="bar" style="width:93.2%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>3. 图书文具</td>
+            <td>¥1,432,783</td>
+            <td>71.59%</td>
+            <td>72.41%</td>
+            <td><div class="bar-container"><div class="bar" style="width:92.2%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>4. 家居用品</td>
+            <td>¥1,378,752</td>
+            <td>77.42%</td>
+            <td>71.20%</td>
+            <td><div class="bar-container"><div class="bar" style="width:88.7%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>5. 运动户外</td>
+            <td>¥1,368,130</td>
+            <td>78.02%</td>
+            <td>71.50%</td>
+            <td><div class="bar-container"><div class="bar" style="width:88.1%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>6. 电子产品</td>
+            <td>¥1,359,789</td>
+            <td>73.33%</td>
+            <td>68.19%</td>
+            <td><div class="bar-container"><div class="bar" style="width:87.5%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>7. 服装鞋帽</td>
+            <td>¥1,346,245</td>
+            <td>71.12%</td>
+            <td>77.24%</td>
+            <td><div class="bar-container"><div class="bar" style="width:86.7%"></div></div></td>
+        </tr>
+        <tr class="">
+            <td>8. 美妆个护</td>
+            <td>¥1,302,346</td>
+            <td>73.57%</td>
+            <td>74.11%</td>
+            <td><div class="bar-container"><div class="bar" style="width:83.8%"></div></div></td>
+        </tr></tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Shapley Factor Attribution (by Platform)</h2>
+  <p style="font-size:13px;color:#64748b;margin-bottom:14px">Positive = factor lifted GMV; Negative = factor dragged GMV. Green = positive, Red = negative.</p>
+  <table>
+    <thead><tr><th>Platform</th><th>Impression</th><th>CTR</th><th>CVR</th><th>ARPU</th></tr></thead>
+    <tbody><tr><td><strong>douyin</strong></td><td style="color:#c62828;font-weight:600">-1.381</td><td style="color:#2e7d32;font-weight:600">+5.673</td><td style="color:#2e7d32;font-weight:600">+9.140</td><td style="color:#2e7d32;font-weight:600">+5.458</td></tr><tr><td><strong>jd</strong></td><td style="color:#c62828;font-weight:600">-0.610</td><td style="color:#2e7d32;font-weight:600">+0.168</td><td style="color:#c62828;font-weight:600">-0.286</td><td style="color:#c62828;font-weight:600">-0.212</td></tr><tr><td><strong>taobao</strong></td><td style="color:#2e7d32;font-weight:600">+0.050</td><td style="color:#c62828;font-weight:600">-0.008</td><td style="color:#c62828;font-weight:600">-1.208</td><td style="color:#2e7d32;font-weight:600">+0.099</td></tr></tbody>
+  </table>
+</div>
+
+<div class="section">
+  <h2>Analysis Dimensions</h2>
+  <span class="tag">Platform</span>
+  <span class="tag">Category</span>
+  <span class="tag">City</span>
+  <span class="tag">Platform × Category</span>
+  <span class="tag">Monthly Trend</span>
+  <span class="tag">Funnel Conversion</span>
+  <span class="tag">Shapley Attribution</span>
+</div>
+
+<div class="footer">E-commerce GMV Attribution System | For educational use only</div>
+
+</body>
+</html>
